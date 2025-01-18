@@ -1,28 +1,20 @@
-CPPFLAGS=-g -DDEBUG
-.SUFFIXES:
-.SUFFIXES: .cpp .c .cpp .h .o
-.c.o: ; gcc $(CPPFLAGS) -c $*.c
-.cpp.o: ; g++ $(CPPFAGS) -c $*.cpp
-#
-## Targets:
-#
-all: progA progB
+# Compiler settings
+JAVAFLAGS=-g
+
+# Pattern for compiling Java code
+%.class: %.java
+	javac ${JAVAFLAGS} $*.java
+
+all: pie.jar
+
+pie.jar: Pie.class PieSlicer.class PieView.class
+	jar cfe pie.jar PieSlicer *.class
+
+PieSlicer.class: PieSlicer.java PieView.class Pie.class
+	
+Pie.class: Pie.java
+	
+PieView.class: PieView.java Pie.class
 
 clean:
-	rm progA progB *.o
-
-progA: utilities.o progA1.o progA2.o
-	g++ $(CPPLFLAGS) utilities.o progA1.o progA2.o
-	mv a.out progA
-
-progB: utilities.o progB1.o
-	g++ $(CPPFLAGS) utilities.o progB1.o
-	mv a.out progB
-
-utilities.o: utilities.cpp utilities.h
-
-progA1.o: progA1.cpp utilities.h progA1.h
-
-progA2.o: progA2.cpp utilities.h progA1.h
-
-progB1.o: progB1.cpp
+	rm *.jar *.class
